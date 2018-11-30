@@ -92,7 +92,7 @@ if last_ip != current_ip:
     
     if current_ip in res:
         with open(LAST_IP_FILE_PATH,"w") as f:
-            f.write(res)
+            f.write(current_ip)
         with open(LOG_FILE_PATH, "a") as f:
             f.write("{t}: {subdomain}.{domain} updated {lastip} to {currentip}.".format(
                 t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
