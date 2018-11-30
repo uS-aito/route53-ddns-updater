@@ -16,9 +16,9 @@ CURRENT_ADDR_CHECK_URL = "https://ieserver.net/ipcheck.shtml"
 DDNS_UPDATE_URL = "https://ieserver.net/cgi-bin/dip.cgi?username={subdomain}&domain={domain}&password={password}&updatehost=1"
 
 # ieServerで取得したサブドメイン(アカウント名)
-SUBDOMAIN = ""
+SUBDOMAIN = "vlmail"
 # ieServerで選択したサブドメイン
-DOMAIN = ""
+DOMAIN = "dip.jp"
 # ieServerのパスワード(環境変数から取得)
 PASSWORD = ""
 
