@@ -97,7 +97,7 @@ if last_ip != current_ip:
             f.write("{t}: {subdomain}.{domain} updated {lastip} to {currentip}.".format(
                 t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
                 subdomain=SUBDOMAIN,
-                domai=DOMAIN,
+                domain=DOMAIN,
                 lastip=last_ip,
                 currentip=current_ip))
             f.write(os.linesep)
