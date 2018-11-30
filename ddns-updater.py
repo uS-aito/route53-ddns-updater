@@ -1,5 +1,7 @@
 # coding: utf-8
+import urllib
 import urllib2
+import json
 import sys
 import time
 import os
@@ -118,8 +120,10 @@ if not resolved_ip == current_ip:
         "text": "Current ip address is {address}".format(address=current_ip),
         "username": USERNAME
     }
+    content = json.dumps(content)
     header = {
         "Content-Type": "application/json"
     }
-    res = urllib2.urlopen(WEBHOOK_URL).read()
+    req = urllib2.Request(WEBHOOK_URL, data=content, headers=header)
+    res = urllib2.urlopen(req).read()
     print res
