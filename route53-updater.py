@@ -51,7 +51,7 @@ class Route53Updater(object):
 
         # hosted_zoneのid取得
         hosted_zones = client.list_hosted_zones()["HostedZones"]
-        hosted_zone_id = [i["Id"] for i in hosted_zones if i["Name"] == DOMAIN][0]
+        hosted_zone_id = [i["Id"] for i in hosted_zones if i["Name"] == domain][0]
 
         # changebatch作成
         change_batch = {
