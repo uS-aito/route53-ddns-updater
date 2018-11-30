@@ -90,7 +90,7 @@ if last_ip != current_ip:
     res = urllib2.urlopen(DDNS_UPDATE_URL.format(
         subdomain=SUBDOMAIN, domain=DOMAIN, password=PASSWORD)).read()
     
-    if res == current_ip:
+    if current_ip in res:
         with open(LAST_IP_FILE_PATH,"w") as f:
             f.write(res)
         with open(LOG_FILE_PATH, "a") as f:
