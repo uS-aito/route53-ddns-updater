@@ -4,6 +4,7 @@ import sys
 import time
 import os
 import urlparse
+import socket
 
 # 前回実行時までのIP保存ファイルパス
 LAST_IP_FILE_PATH = "./last_ip"
@@ -11,7 +12,7 @@ LAST_IP_FILE_PATH = "./last_ip"
 LOG_FILE_PATH = "./ddns-update.log"
 # 現在のGIPを確認するURL
 CURRENT_ADDR_CHECK_URL = "https://ieserver.net/ipcheck.shtml"
-# DDNSのレコードを更新するURL(クエリストリングが必要)
+# DDNSのレコードを更新するURL
 DDNS_UPDATE_URL = "https://ieserver.net/cgi-bin/dip.cgi?username={subdomain}&domain={domain}&password={password}&updatehost=1"
 
 # ieServerで取得したサブドメイン(アカウント名)
@@ -22,13 +23,15 @@ DOMAIN = ""
 PASSWORD = ""
 
 # Slackのwebhook url
-WEBHOOK_URL = ""
+WEBHOOK_URL = "https://hooks.slack.com/services/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"
 # Slackのチャンネル名
-CHANNEL_NAME = ""
+CHANNEL_NAME = "ip_checker"
 # 投稿時のユーザ名
-USERNAME = ""
+USERNAME = "ip_checker"
 # 投稿時のアイコンURL
 ICON_URL = ""
+# 投稿時の絵文字
+ICON_EMOJI = ":speech_balloon:"
 
 # ファイルから前回実行時までのIPアドレスを取得
 ##　取得失敗したら終了
@@ -106,3 +109,17 @@ if last_ip != current_ip:
 
 
 # 現在のIPとドメイン名を引いた時のIPが異なっている場合、Slackに現在のIPを通知
+resolved_ip = socket.gethostbyname("{subdomain}.{domain}".format(subdomain=SUBDOMAIN, domain=DOMAIN))
+if not resolved_ip == current_ip:
+    content = {
+        "icon_emoji": ICON_EMOJI,
+        "icon_url": ICON_URL,
+        "channel": CHANNEL_NAME,
+        "text": "Current ip address is {address}".format(address=current_ip),
+        "username": USERNAME
+    }
+    header = {
+        "Content-Type": "application/json"
+    }
+    res = urllib2.urlopen(WEBHOOK_URL).read()
+    print res
