@@ -9,7 +9,8 @@ class Route53Updater(object):
         client = boto3.client('route53', region_name="us-east-1")
 
         # hosted_zoneのid取得
-        hosted_zones = client.list_hosted_zones()["HostedZones"]
+        name = domain if host == "" else host + "." + domain
+        hosted_zones = client.list_hosted_zones_by_name(DNSName=name)["HostedZones"]
         hosted_zone_id = [i["Id"] for i in hosted_zones if i["Name"] == domain][0]
 
         # changebatch作成
