@@ -1,12 +1,11 @@
 # coding: utf-8
-import urllib
 import urllib2
 import json
 import sys
 import time
 import os
-import urlparse
 import socket
+import route53updater
 
 # 前回実行時までのIP保存ファイルパス
 LAST_IP_FILE_PATH = "./last_ip"
@@ -17,12 +16,8 @@ CURRENT_ADDR_CHECK_URL = "https://ieserver.net/ipcheck.shtml"
 # DDNSのレコードを更新するURL
 DDNS_UPDATE_URL = "https://ieserver.net/cgi-bin/dip.cgi?username={subdomain}&domain={domain}&password={password}&updatehost=1"
 
-# ieServerで取得したサブドメイン(アカウント名)
-SUBDOMAIN = "vlmail"
-# ieServerで選択したサブドメイン
-DOMAIN = "dip.jp"
-# ieServerのパスワード(環境変数から取得)
-PASSWORD = ""
+# 更新するRoute53のドメイン名
+DOMAIN = "vlsys.net."
 
 # Slackのwebhook url
 WEBHOOK_URL = "https://hooks.slack.com/services/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"
@@ -34,6 +29,7 @@ USERNAME = "ip_checker"
 ICON_URL = ""
 # 投稿時の絵文字
 ICON_EMOJI = ":speech_balloon:"
+
 
 # ファイルから前回実行時までのIPアドレスを取得
 ##　取得失敗したら終了
@@ -47,18 +43,6 @@ except IOError:
             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())))
         f.write(os.linesep)
     sys.exit(-1)
-
-
-# 環境変数からパスワードを取得
-## 失敗したら終了
-try:
-    PASSWORD = os.environ["DDNS_PASS"]
-except KeyError:
-    with open(LOG_FILE_PATH, "a") as f:
-        f.write("{t}: cannot read DDNS_PASS.".format(
-            t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())))
-        f.write(os.linesep)
-    sys.exit(-1)    
 
 
 # 現在のGIPをチェック
@@ -83,30 +67,29 @@ except:
         f.write(os.linesep)
     sys.exit(-1)    
 
-# GIPが変わっていたら、DDNSのレコードをアップデート
-## 元のperl見てるとここでGIP取得確認してるけど、先にやったので不要
-### DDNSのレコード更新用URLにリクエスト投げる
-### レスポンスが現在のGIPと同じなら更新成功、異なっていたら更新失敗
-if last_ip != current_ip:
 
-    res = urllib2.urlopen(DDNS_UPDATE_URL.format(
-        subdomain=SUBDOMAIN, domain=DOMAIN, password=PASSWORD)).read()
-    
-    if current_ip in res:
+# GIPが変わっていたら、Route53のレコードをアップデート
+if last_ip != current_ip:
+    try:
+        # レコードアップデート
+        r53u = route53updater.Route53Updater()
+        r53u.update_a_record(domain=DOMAIN, addr=current_ip)
+    except:
+        # 例外発生
+        with open(LOG_FILE_PATH, "a") as f:
+            f.write("Any error occured." + os.linesep)
+            import traceback
+            f.write(traceback.print_exc())
+    else:
+        # 正常終了時のログ出力
         with open(LAST_IP_FILE_PATH,"w") as f:
             f.write(current_ip)
         with open(LOG_FILE_PATH, "a") as f:
-            f.write("{t}: {subdomain}.{domain} updated {lastip} to {currentip}.".format(
+            f.write("{t}: {domain} updated {lastip} to {currentip}.".format(
                 t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
-                subdomain=SUBDOMAIN,
                 domain=DOMAIN,
                 lastip=last_ip,
                 currentip=current_ip))
-            f.write(os.linesep)
-    else:
-        with open(LOG_FILE_PATH, "a") as f:
-            f.write("{t}: update aborted.".format(
-                t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime())))
             f.write(os.linesep)
 
 
