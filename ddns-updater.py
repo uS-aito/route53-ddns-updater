@@ -38,7 +38,7 @@ try:
         last_ip = f.read().replace(os.linesep,"")
 except IOError:
     # ログにエラーの出力くらいしとこう
-    if os.path.exists(LAST_IP_FILE_PATH):
+    if not os.path.exists(LAST_IP_FILE_PATH):
         with open(LAST_IP_FILE_PATH,"w") as f:
             pass
         with open(LOG_FILE_PATH, "a") as f:
