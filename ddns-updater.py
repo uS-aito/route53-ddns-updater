@@ -38,6 +38,15 @@ try:
         last_ip = f.read().replace(os.linesep,"")
 except IOError:
     # ログにエラーの出力くらいしとこう
+    if os.path.exists(LAST_IP_FILE_PATH):
+        with open(LAST_IP_FILE_PATH,"w") as f:
+            pass
+        with open(LOG_FILE_PATH, "a") as f:
+            f.write("{t}: last ip file does not exist.".format(
+                t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())))
+            f.write(os.linesep)
+        sys.exit(-1)
+
     with open(LOG_FILE_PATH, "a") as f:
         f.write("{t}: cannot read last ip file.".format(
             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())))
