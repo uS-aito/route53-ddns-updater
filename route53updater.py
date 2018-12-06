@@ -35,6 +35,12 @@ class Route53Updater(object):
         )
 
     def list_resource_record_set(self, host="", domain=""):
+        # hosted_zoneのid取得
         name = domain if host == "" else host + "." + domain
         hosted_zones = self.client.list_hosted_zones_by_name(DNSName=name)["HostedZones"]
-        return hosted_zones
+        hosted_zone_id = [i["Id"] for i in hosted_zones if i["Name"] == domain][0]
+
+        # リソースセット取得
+        response = self.client.list_resource_record_sets(HostedZoneId=hosted_zone_id,StartRecordName="A")
+        
+        return [x for x in response["ResourceRecordSets"] if x["Type"] == "A"]

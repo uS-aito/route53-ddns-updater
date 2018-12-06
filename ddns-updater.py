@@ -55,8 +55,17 @@ ICON_EMOJI = ":speech_balloon:"
 # 要するに現在DOMAINに登録されているIPアドレスを確認したい
 # ieServerはそういうAPIが無いのでファイルに出力していた
 # Route53はあるのでそっちから引っ張ったほうが良い?
+r53u = route53updater.Route53Updater()
+records = r53u.list_resource_record_set(domain=DOMAIN)
+# Aレコードが複数あったら変なので終わり
+if len(records) > 1:
+    with open(LOG_FILE_PATH, "a") as f:
+        f.write("{t}: Invalid A records.".format(
+            t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime())))
+        f.write(os.linesep)
+    sys.exit(-1)    
+last_ip = records[0]["ResourceRecords"][0]["Value"]
 
-last_ip = socket.gethostbyname("{domain}".format(domain=DOMAIN))
 
 # 現在のGIPをチェック
 ## 取得できてなかったら何もしないで終了
