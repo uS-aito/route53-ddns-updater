@@ -31,27 +31,6 @@ ICON_URL = ""
 ICON_EMOJI = ":speech_balloon:"
 
 
-# ファイルから前回実行時までのIPアドレスを取得
-##　取得失敗したら終了
-# try:
-#     with open(LAST_IP_FILE_PATH, "r") as f:
-#         last_ip = f.read().replace(os.linesep,"")
-# except IOError:
-#     if not os.path.exists(LAST_IP_FILE_PATH):
-#         with open(LAST_IP_FILE_PATH,"w") as f:
-#             pass
-#         with open(LOG_FILE_PATH, "a") as f:
-#             f.write("{t}: last ip file does not exist. creating it.".format(
-#                 t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())))
-#             f.write(os.linesep)
-#         last_ip = ""
-#     else:
-#         with open(LOG_FILE_PATH, "a") as f:
-#             f.write("{t}: cannot read last ip file.".format(
-#                 t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())))
-#             f.write(os.linesep)
-#         sys.exit(-1)
-
 # 要するに現在DOMAINに登録されているIPアドレスを確認したい
 # ieServerはそういうAPIが無いのでファイルに出力していた
 # Route53はあるのでそっちから引っ張ったほうが良い?
