@@ -105,6 +105,7 @@ else:
             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
             domain=DOMAIN
         ))
+        f.write(os.linesep)
 
 # 現在のIPとドメイン名を引いた時のIPが異なっている場合、Slackに現在のIPを通知
 resolved_ip = socket.gethostbyname("{domain}".format(domain=DOMAIN))
@@ -129,3 +130,4 @@ else:
             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
             domain=DOMAIN
         ))
+        f.write(os.linesep)
