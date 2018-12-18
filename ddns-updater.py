@@ -36,13 +36,27 @@ ICON_EMOJI = ":speech_balloon:"
 # Route53はあるのでそっちから引っ張ったほうが良い?
 r53u = route53updater.Route53Updater()
 records = r53u.list_resource_record_set(domain=DOMAIN)
-# Aレコードが複数あったら変なので終わり
-if len(records) > 1:
+# vlsys.netのAレコードがなかったら変なので終わり
+for r in records:
+    if r["Name"] == DOMAIN:
+        break
+else:
     with open(LOG_FILE_PATH, "a") as f:
-        f.write("{t}: Invalid A records.".format(
-            t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime())))
+        f.write("{t}: Invalid A records: {records}".format(
+            t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())),
+            records=records
+            )
         f.write(os.linesep)
     sys.exit(-1)    
+
+# if len(records) > 1:
+#     with open(LOG_FILE_PATH, "a") as f:
+#         f.write("{t}: Invalid A records: {records}".format(
+#             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())),
+#             records=records
+#             )
+#         f.write(os.linesep)
+#     sys.exit(-1)    
 last_ip = records[0]["ResourceRecords"][0]["Value"]
 
 
