@@ -48,15 +48,6 @@ else:
             )
         f.write(os.linesep)
     sys.exit(-1)    
-
-# if len(records) > 1:
-#     with open(LOG_FILE_PATH, "a") as f:
-#         f.write("{t}: Invalid A records: {records}".format(
-#             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())),
-#             records=records
-#             )
-#         f.write(os.linesep)
-#     sys.exit(-1)    
 last_ip = records[0]["ResourceRecords"][0]["Value"]
 
 
@@ -108,7 +99,12 @@ if last_ip != current_ip:
                 lastip=last_ip,
                 currentip=current_ip))
             f.write(os.linesep)
-
+else:
+    with open(LOG_FILE_PATH, "a") as f:
+        f.write("{t}: {domain} is already updated. Nothing to do.".format(
+            t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
+            domain=DOMAIN
+        ))
 
 # 現在のIPとドメイン名を引いた時のIPが異なっている場合、Slackに現在のIPを通知
 resolved_ip = socket.gethostbyname("{domain}".format(domain=DOMAIN))
@@ -127,3 +123,9 @@ if not resolved_ip == current_ip:
     req = urllib.request.Request(WEBHOOK_URL, data=content.encode("utf-8"), headers=header)
     res = urllib.request.urlopen(req).read()
     print(res)
+else:
+    with open(LOG_FILE_PATH, "a") as f:
+        f.write("{t}: {domain} is resolved the latest record. Nothing to notify.".format(
+            t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
+            domain=DOMAIN
+        ))
