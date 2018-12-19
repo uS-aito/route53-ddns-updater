@@ -7,10 +7,12 @@ import os
 import socket
 import route53updater
 
+# スクリプトのパス
+DIR = os.path.dirname(os.path.abspath(__file__))
 # 前回実行時までのIP保存ファイルパス
-LAST_IP_FILE_PATH = "./last_ip"
+LAST_IP_FILE_PATH = DIR + "last_ip"
 # ログファイルパス
-LOG_FILE_PATH = "./ddns-update.log"
+LOG_FILE_PATH = DIR + "ddns-update.log"
 # 現在のGIPを確認するURL
 CURRENT_ADDR_CHECK_URL = "https://ieserver.net/ipcheck.shtml"
 # DDNSのレコードを更新するURL
