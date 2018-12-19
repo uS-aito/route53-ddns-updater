@@ -9,8 +9,6 @@ import route53updater
 
 # スクリプトのパス
 DIR = os.path.dirname(os.path.abspath(__file__))
-# 前回実行時までのIP保存ファイルパス
-LAST_IP_FILE_PATH = DIR + "last_ip"
 # ログファイルパス
 LOG_FILE_PATH = DIR + "ddns-update.log"
 # 現在のGIPを確認するURL
@@ -92,8 +90,6 @@ if last_ip != current_ip:
         sys.exit(-1)
     else:
         # 正常終了時のログ出力
-        with open(LAST_IP_FILE_PATH,"w") as f:
-            f.write(current_ip)
         with open(LOG_FILE_PATH, "a") as f:
             f.write("{t}: {domain} updated {lastip} to {currentip}.".format(
                 t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
