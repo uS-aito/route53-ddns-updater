@@ -10,7 +10,7 @@ ENV TZ='Asia/Tokyo'
 WORKDIR /root
 
 # スクリプトをコピー
-COPY ../scripts/ ./
+COPY ./scripts/ ./
 
 # パッケージインストール
 RUN pip install -r requirements.txt
