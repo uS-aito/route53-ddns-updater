@@ -28,3 +28,12 @@ jobs:
       - run:
           name: push image as latest version
           command: docker push $ACR_LOGIN_SERVER/ddns-test:latest
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+        requires:
+          - build
