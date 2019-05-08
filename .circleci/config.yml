@@ -27,7 +27,7 @@ jobs:
             - image
       - run:
           name: restore image
-          command: docker load < ddns-test.tar
+          command: docker load < ./cache_dir/ddns-test.tar
       - run:
           name: login arc repo
           command: docker login $ACR_LOGIN_SERVER --username $ACR_LOGIN_ID --password $ACR_LOGIN_PASS
