@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/
+    working_directory: ~/working_dir
     machine: true
     steps:
       - checkout
@@ -17,7 +17,7 @@ jobs:
             - ~/
 
   deploy:
-    working_directory: ~/
+    working_directory: ~/working_dir
     machine: true
     steps:
       - restore_cache:
