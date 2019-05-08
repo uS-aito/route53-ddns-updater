@@ -6,4 +6,25 @@ jobs:
       - checkout
       - run:
           name: build image 
-          command: docker build -t ddns-test ./dockerfile
+          command: docker build -t ddns-test:tmp ./dockerfile
+  deploy:
+    machine: true
+    steps:
+      - run:
+          name: login arc repo
+          command: docker login $ACR_LOGIN_SERVER --username $ACR_LOGIN_ID --password $ACR_LOGIN_PASS
+      - run:
+          name: get date for image tag
+          command: version=`date +"%Y%m%d%H%M%S"`
+      - run:
+          name: set tag as current version 
+          command: docker tag ddns-test:tmp $ACR_LOGIN_SERVER/ddns-test:$version
+      - run:
+          name: push image as current version
+          command: docker push $ACR_LOGIN_SERVER/ddns-test:$version
+      - run:
+          name: set tag as latest version
+          command: docker tag ddns-test:tmp $ACR_LOGIN_SERVER/ddns-test:latest
+      - run:
+          name: push image as latest version
+          command: docker push $ACR_LOGIN_SERVER/ddns-test:latest
