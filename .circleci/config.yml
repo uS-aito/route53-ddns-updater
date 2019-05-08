@@ -1,15 +1,31 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/
     machine: true
     steps:
       - checkout
       - run:
           name: build image 
           command: docker build -t ddns-test:tmp ./dockerfile
+      - run:
+          name: save image
+          command: docker save ddns-test:tmp > ddns-test.tar
+      - save_cache:
+          key: image-{{ epoch }}
+          paths:
+            - ~/
+
   deploy:
+    working_directory: ~/
     machine: true
     steps:
+      - restore_cache:
+          keys:
+            - image
+      - run:
+          name: restore image
+          command: docker load < ddns-test.tar
       - run:
           name: login arc repo
           command: docker login $ACR_LOGIN_SERVER --username $ACR_LOGIN_ID --password $ACR_LOGIN_PASS
