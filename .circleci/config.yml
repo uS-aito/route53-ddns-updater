@@ -10,11 +10,13 @@ jobs:
           command: docker build -t ddns-test:tmp ./dockerfile
       - run:
           name: save image
-          command: docker save ddns-test:tmp > ddns-test.tar
+          command: |
+            mkdir cache_dir
+            docker save ddns-test:tmp > ./cache_dir/ddns-test.tar
       - save_cache:
           key: image-{{ epoch }}
           paths:
-            - ~/
+            - ~/working_dir/cache_dir
 
   deploy:
     working_directory: ~/working_dir
@@ -55,3 +57,6 @@ workflows:
       - deploy:
           requires:
             - build
+          filters:
+            branches:
+              only: master
