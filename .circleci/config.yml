@@ -5,4 +5,6 @@ jobs:
       - image: docker
     steps:
       - checkout
-      - run: echo "A first hello"
+      - run:
+        name: build image 
+        command: docker build -t ddns-test ./dockerfile
