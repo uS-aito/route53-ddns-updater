@@ -7,12 +7,12 @@ jobs:
       - checkout
       - run:
           name: build image 
-          command: docker build -t ddns-test:tmp ./dockerfile
+          command: docker build -t ddns-updater:tmp ./dockerfile
       - run:
           name: save image
           command: |
             mkdir cache_dir
-            docker save ddns-test:tmp > ./cache_dir/ddns-test.tar
+            docker save ddns-updater:tmp > ./cache_dir/ddns-updater.tar
       - save_cache:
           key: image-{{ epoch }}
           paths:
@@ -27,7 +27,7 @@ jobs:
             - image
       - run:
           name: restore image
-          command: docker load < ./cache_dir/ddns-test.tar
+          command: docker load < ./cache_dir/ddns-updater.tar
       - run:
           name: login arc repo
           command: docker login $ACR_LOGIN_SERVER --username $ACR_LOGIN_ID --password $ACR_LOGIN_PASS
@@ -38,16 +38,16 @@ jobs:
             source $BASH_ENV
       - run:
           name: set tag as current version 
-          command: docker tag ddns-test:tmp $ACR_LOGIN_SERVER/ddns-test:$VERSION
+          command: docker tag ddns-updater:tmp $ACR_LOGIN_SERVER/ddns-updater:$VERSION
       - run:
           name: push image as current version
-          command: docker push $ACR_LOGIN_SERVER/ddns-test:$VERSION
+          command: docker push $ACR_LOGIN_SERVER/ddns-updater:$VERSION
       - run:
           name: set tag as latest version
-          command: docker tag ddns-test:tmp $ACR_LOGIN_SERVER/ddns-test:latest
+          command: docker tag ddns-updater:tmp $ACR_LOGIN_SERVER/ddns-updater:latest
       - run:
           name: push image as latest version
-          command: docker push $ACR_LOGIN_SERVER/ddns-test:latest
+          command: docker push $ACR_LOGIN_SERVER/ddns-updater:latest
 
 workflows:
   version: 2
