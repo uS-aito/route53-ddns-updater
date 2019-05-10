@@ -16,4 +16,4 @@ COPY ./scripts/ ./
 RUN pip install -r requirements.txt
 
 # コンテナ起動時に実行するコマンド
-CMD /root/ddns-updater.py
+CMD ["python","/root/ddns-updater.py"]
