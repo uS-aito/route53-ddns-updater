@@ -36,7 +36,7 @@ jobs:
           command: ssh -p 37292 root@vlsys.net "source /etc/profile; docker save ddns-updater:arm64 > /tmp/ddns-updater.arm64.tar"
       - run:
           name: get image
-          command: scp root@vlsys.net:/tmp/ddns-updater.arm64.tar ~/working_dir/cache_dir/ -p 37292
+          command: scp root@vlsys.net:/tmp/ddns-updater.arm64.tar ~/working_dir/ -p 37292
       - run:
           name: clean up
           command: ssh -p 37292 root@vlsys.net "source /etc/profile; rm -rf /tmp/dockerfile"
