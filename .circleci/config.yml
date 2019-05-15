@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  build_amd64:
     working_directory: ~/working_dir
     machine: true
     steps:
@@ -17,17 +17,28 @@ jobs:
           key: image-{{ epoch }}
           paths:
             - ~/working_dir/cache_dir
-  ssh_test:
+  build_arm64:
     working_directory: ~/working_dir
     machine: true
     steps:
+      - checkout
       - add_ssh_keys:
           fingerprints:
             - "c1:2e:8f:1e:f2:e2:a8:74:a2:f5:a6:77:e8:60:92:49"
       - run:
-          name: ssh test
-          command: ssh -p 7292 yusaito@vlsys.net "echo 'Hello, collard!' >> /tmp/test"
-
+          name: scp dockerfile dir
+          command: scp -r ./dockerfile root@vlsys.net:/tmp/ -P 37292
+      - run:
+          name: build and archive image
+          command: |
+            ssh -p 37292 root@vlsys.net "docker build -t ddns-updater:arm64 /tmp/dockerfile"
+            docker save ddns-updater:arm64 > /tmp/ddns-updater.arm64.tar
+      - run:
+          name: get image
+          command: scp root@vlsys.net:/tmp/ddns-updater.arm64.tar ~/working_dir/cache_dir/ -p 37292
+      - run:
+          name: clean up
+          command: ssh -p 37292 root@vlsys.net "rm -rf /tmp/dockerfile"
   deploy:
     working_directory: ~/working_dir
     machine: true
@@ -64,7 +75,7 @@ workflows:
   build_and_deploy:
     jobs:
       # - build
-      - ssh_test
+      - build_arm64
       # - deploy:
       #     requires:
       #       - build
