@@ -19,14 +19,14 @@ jobs:
           command: ssh -p 37292 root@vlsys.net "source /etc/profile; docker save ddns-updater:arm64 > /tmp/ddns-updater.arm64.tar"
       - run:
           name: get image
-          command: scp -P 37292 root@vlsys.net:/tmp/ddns-updater.arm64.tar ~/working_dir/cache_dir/ddns-updater.arm64.tar
+          command: scp -P 37292 root@vlsys.net:/tmp/ddns-updater.arm64.tar ~/working_dir/ddns-updater.arm64.tar
       - run:
           name: clean up
           command: ssh -p 37292 root@vlsys.net "source /etc/profile; rm -rf /tmp/dockerfile; rm -rf /tmp/ddns-updater.arm64.tar"
       - save_cache:
           key: image-{{ epoch }}
           paths:
-            - ~/working_dir/cache_dir
+            - ~/working_dir/ddns-updater.arm64.tar
 
   deploy:
     working_directory: ~/working_dir
@@ -37,7 +37,7 @@ jobs:
             - image
       - run:
           name: restore image
-          command: docker load < ~/working_dir/cache_dir/ddns-updater.arm64.tar
+          command: docker load < ~/working_dir/ddns-updater.arm64.tar
       - run:
           name: login arc repo
           command: docker login $ACR_LOGIN_SERVER --username $ACR_LOGIN_ID --password $ACR_LOGIN_PASS
