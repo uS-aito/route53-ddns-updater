@@ -48,7 +48,7 @@ jobs:
             source $BASH_ENV
       - run:
           name: set tag as current version 
-          command: docker tag ddns-updater:tmp $ACR_LOGIN_SERVER/ddns-updater:$VERSION
+          command: docker tag ddns-updater:arm64 $ACR_LOGIN_SERVER/ddns-updater:$VERSION
       - run:
           name: push image as current version
           command: docker push $ACR_LOGIN_SERVER/ddns-updater:$VERSION
