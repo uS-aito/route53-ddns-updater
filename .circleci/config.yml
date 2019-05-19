@@ -54,7 +54,7 @@ jobs:
           command: docker push $ACR_LOGIN_SERVER/ddns-updater:$VERSION
       - run:
           name: set tag as latest version
-          command: docker tag ddns-updater:tmp $ACR_LOGIN_SERVER/ddns-updater:latest
+          command: docker tag ddns-updater:arm64 $ACR_LOGIN_SERVER/ddns-updater:latest
       - run:
           name: push image as latest version
           command: docker push $ACR_LOGIN_SERVER/ddns-updater:latest
