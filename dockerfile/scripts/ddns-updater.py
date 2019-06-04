@@ -9,8 +9,6 @@ import route53updater
 
 # スクリプトのパス
 DIR = os.path.dirname(os.path.abspath(__file__))
-# ログファイルパス
-LOG_FILE_PATH = DIR + "/ddns-update.log"
 # 現在のGIPを確認するURL
 CURRENT_ADDR_CHECK_URL = "https://ieserver.net/ipcheck.shtml"
 # DDNSのレコードを更新するURL
@@ -78,29 +76,29 @@ if last_ip != current_ip:
         r53u.update_a_record(domain=DOMAIN, addr=current_ip)
     except:
         # 例外発生
-        with open(LOG_FILE_PATH, "a") as f:
-            f.write("{t}: Any error occured.".format(
-                t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())))
-            f.write(os.linesep)
-            import traceback
-            f.write(traceback.format_exc())
+        print(
+            "{t}: Any error occured.".format(
+            t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()))
+        )
+        import traceback
+        traceback.print_exc()
         sys.exit(-1)
     else:
         # 正常終了時のログ出力
-        with open(LOG_FILE_PATH, "a") as f:
-            f.write("{t}: {domain} updated {lastip} to {currentip}.".format(
-                t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
-                domain=DOMAIN,
-                lastip=last_ip,
-                currentip=current_ip))
-            f.write(os.linesep)
+        print(
+            "{t}: {domain} updated {lastip} to {currentip}.".format(
+            t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
+            domain=DOMAIN,
+            lastip=last_ip,
+            currentip=current_ip)
+        )
 else:
-    with open(LOG_FILE_PATH, "a") as f:
-        f.write("{t}: {domain} is already updated. Nothing to do.".format(
+    print(
+        "{t}: {domain} is already updated. Nothing to do.".format(
             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
             domain=DOMAIN
-        ))
-        f.write(os.linesep)
+        )
+    )
 
 # 現在のIPとドメイン名を引いた時のIPが異なっている場合、Slackに現在のIPを通知
 resolved_ip = socket.gethostbyname("{domain}".format(domain=DOMAIN))
@@ -120,9 +118,9 @@ if not resolved_ip == current_ip:
     res = urllib.request.urlopen(req).read()
     print(res)
 else:
-    with open(LOG_FILE_PATH, "a") as f:
-        f.write("{t}: {domain} is resolved the latest record. Nothing to notify.".format(
+    print(
+        "{t}: {domain} is resolved the latest record. Nothing to notify.".format(
             t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()),
             domain=DOMAIN
-        ))
-        f.write(os.linesep)
+        )
+    )
