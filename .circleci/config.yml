@@ -42,9 +42,9 @@ jobs:
           name: login arc repo
           command: docker login $ACR_LOGIN_SERVER --username $ACR_LOGIN_ID --password $ACR_LOGIN_PASS
       - run:
-          name: get date for image tag
+          name: set version
           command: |
-            echo 'export VERSION=`date +"%Y%m%d%H%M%S"`' >> $BASH_ENV
+            echo 'export VERSION=v1.1' >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: set tag as current version 
