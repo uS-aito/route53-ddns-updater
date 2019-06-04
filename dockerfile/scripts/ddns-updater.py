@@ -41,12 +41,10 @@ for r in records:
     if r["Name"] == DOMAIN:
         break
 else:
-    with open(LOG_FILE_PATH, "a") as f:
-        f.write("{t}: Invalid A records: {records}".format(
-            t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())),
-            records=records
-            )
-        f.write(os.linesep)
+    print("{t}: Invalid A records: {records}".format(
+        t=time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())),
+        records=records
+    )
     sys.exit(-1)    
 last_ip = records[0]["ResourceRecords"][0]["Value"]
 
@@ -61,16 +59,15 @@ except urllib.error.URLError:
         current_ip = urllib.request.urlopen(CURRENT_ADDR_CHECK_URL.replace(
             "https", "http")).read().decode("utf-8")
     except:
-        with open(LOG_FILE_PATH, "a") as f:
-            f.write("{t}: cannot check current ip (using http).".format(
-                t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime())))
-            f.write(os.linesep)
+        print(
+            "{t}: cannot check current ip (using http).".format(
+            t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime()))
+        )
         sys.exit(-1)    
 except:
-    with open(LOG_FILE_PATH, "a") as f:
-        f.write("{t}: cannot check current ip.".format(
-            t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime())))
-        f.write(os.linesep)
+    print("{t}: cannot check current ip.".format(
+        t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime()))
+    )
     sys.exit(-1)    
 
 
