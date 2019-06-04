@@ -11,8 +11,6 @@ import route53updater
 DIR = os.path.dirname(os.path.abspath(__file__))
 # 現在のGIPを確認するURL
 CURRENT_ADDR_CHECK_URL = "https://ieserver.net/ipcheck.shtml"
-# DDNSのレコードを更新するURL
-DDNS_UPDATE_URL = "https://ieserver.net/cgi-bin/dip.cgi?username={subdomain}&domain={domain}&password={password}&updatehost=1"
 
 # 更新するRoute53のドメイン名
 DOMAIN = "vlsys.net."
