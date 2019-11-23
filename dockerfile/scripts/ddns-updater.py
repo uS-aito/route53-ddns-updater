@@ -10,7 +10,7 @@ import route53updater
 # スクリプトのパス
 DIR = os.path.dirname(os.path.abspath(__file__))
 # 現在のGIPを確認するURL
-CURRENT_ADDR_CHECK_URL = "https://ieserver.net/ipcheck.shtml"
+CURRENT_ADDR_CHECK_URL = "https://httpbin.org/ip"
 
 # 更新するRoute53のドメイン名
 DOMAIN = "vlsys.net."
@@ -49,11 +49,13 @@ last_ip = records[0]["ResourceRecords"][0]["Value"]
 ## 取得できてなかったら何もしないで終了
 ### sys.exit(-1)
 try:
-    current_ip = urllib.request.urlopen(CURRENT_ADDR_CHECK_URL).read().decode("utf-8")
+    resp =  urllib.request.urlopen(CURRENT_ADDR_CHECK_URL).read().decode("utf-8")
+    current_ip = json.loads(resp)["origin"]
 except urllib.error.URLError:
     try:
-        current_ip = urllib.request.urlopen(CURRENT_ADDR_CHECK_URL.replace(
+        resp = urllib.request.urlopen(CURRENT_ADDR_CHECK_URL.replace(
             "https", "http")).read().decode("utf-8")
+        current_ip = json.loads(resp)["origin"]
     except:
         print(
             "{t}: cannot check current ip (using http).".format(
