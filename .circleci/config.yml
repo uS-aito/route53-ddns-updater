@@ -44,7 +44,7 @@ jobs:
       - run:
           name: set version
           command: |
-            echo 'export VERSION=v1.2' >> $BASH_ENV
+            echo 'export VERSION=v1.21' >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: set tag as current version 
