@@ -26,6 +26,18 @@ ICON_URL = ""
 # 投稿時の絵文字
 ICON_EMOJI = ":speech_balloon:"
 
+# httpbinからのレスポンスを必要に応じて訂正する
+# レスポンスがjsonなので解析するのと、なぜか同じipを二つ返してくることが確認されている
+def validate_httpbin_response(resp):
+    current_ip = json.loads(resp)["origin"]
+
+    if "," in current_ip:
+        if len(current_ip.split(",")) == 2:
+            current_ip = current_ip.split(",")[0]
+        else:
+            raise ValueError("想定外のレスポンスです。" + os.linesep + str(resp))
+
+    return current_ip
 
 # 要するに現在DOMAINに登録されているIPアドレスを確認したい
 # ieServerはそういうAPIが無いのでファイルに出力していた
@@ -44,18 +56,17 @@ else:
     sys.exit(-1)    
 last_ip = records[0]["ResourceRecords"][0]["Value"]
 
-
 # 現在のGIPをチェック
 ## 取得できてなかったら何もしないで終了
 ### sys.exit(-1)
 try:
     resp =  urllib.request.urlopen(CURRENT_ADDR_CHECK_URL).read().decode("utf-8")
-    current_ip = json.loads(resp)["origin"]
+    current_ip = validate_httpbin_response(resp)
 except urllib.error.URLError:
     try:
         resp = urllib.request.urlopen(CURRENT_ADDR_CHECK_URL.replace(
             "https", "http")).read().decode("utf-8")
-        current_ip = json.loads(resp)["origin"]
+        current_ip = validate_httpbin_response(resp)
     except:
         print(
             "{t}: cannot check current ip (using http).".format(
@@ -66,6 +77,8 @@ except:
     print("{t}: cannot check current ip.".format(
         t=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime()))
     )
+    import traceback
+    traceback.print_exc()
     sys.exit(-1)    
 
 
