@@ -16,7 +16,7 @@ CURRENT_ADDR_CHECK_URL = "https://httpbin.org/ip"
 DOMAIN = "vlsys.net."
 
 # Slackのwebhook url
-WEBHOOK_URL = "https://hooks.slack.com/services/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"
+WEBHOOK_URL = "https://hooks.slack.com/services/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"
 # Slackのチャンネル名
 CHANNEL_NAME = "ip_checker"
 # 投稿時のユーザ名
